@@ -1,73 +1,84 @@
-# Activities 13 + 14: Conditionals and Booleans in ASM
+# Activity 15: Loops in Assemby
 ## Put your name(s) here
 
-In this activity, you will explore how comparison and jump operations are used
-to build conditional statements. You will:
-- Experiment with C code containing if statements and examine the generated assembly code
-- Examine how C code that stores boolean values is implemented in assembly
-- Examine the effect of compiler optimizations in eliminating jumps by handling conditionals differently
+In this activity, you will explore how comparisons and jumps can implement simple loops. You will:
+- Experiment with C code containing while and for loops and examine the generated assembly code
+- Examine how nested loops are created
+- Compare the assembly language produced by gcc for isolated functions against the lower-level assembly language produced by disassembling the executable
+
 
 ## Provided Code
 
 This code has "library" files without `main` functions defined, so that we generate just code for each function to examine.
 - `Makefile`
     - a makefile to automate the compilation process
-- `basic_condits.c`
-    - a C code file for function definitions that implement simple if statements
-- `absdiff.c`
-    - a C code file to demonstrate variant forms of conditional and their relationship to compiler optimizations
-- `boolean_funcs.c`
-    - a C code file with functions that return boolean values
-
-### More Makefile complications
-
-The Makefile for this example has a new pattern rules, which allow us
-to generate assembly language with no compiler optimizations (our default) and also a 
-variation that uses level 1 compiler optimizations. It augments the filenames with an extension to indicate the optimization level.
-
-At the start, the Makefile will only make the basic `.s` files, you will modify it to generate the alternate files later.
+- `loops.c`
+    - a C code file for function definitions that implement simple loops
+- `loops_main.C`
+    - a C code file with copies of the functions from `loops.c` but with a
+    `main` function that demonstrates each function
 
 
 ## Your Tasks
 
-Before starting the tasks, examine the contents of the C code file and the Makefile. Make sure you understand what both are supposed to do.
+Before starting the tasks, examine the contents of the C code files and the Makefile. Make sure you understand what both are supposed to do.
 
-### Task 1: Basic conditional statements
+### Task 1: Basic while loops
 
-- Examine the file `basic_condits.c`. It contains two functions, one implements a simple if statement, and the second implements a "too simple" if statement.
+- Examine the two functions defined in `loops.c`. One of these is from your reading
+the other is a slightly more complicated example (it multiplies its inputs using
+repeated addition to calculate the product).
 
-- Run `make` and examine the resulting assembly language. Discuss with your teammates what you see for each example. Why is the second example "too simple"? Put your answers here in the README file.
+- Run `make` and examine the resulting assembly language in `loops.s` for each function. Discuss with your teammates what you see for each example. Make a copy of the `.s` file and add comments as we have done before.
 
-- Check your work on the by-hand portions of this activity by copying the `equals` and `is_zero` functions to `basic_condit.c`. Fill in specific values for the `DATAT` and `COMP` placeholders, and generate the assembly code. Try all different lengths of integer, plus all the unsigned variants. 
+- Compare the code generated for `sum_up` in `loops.s` with the code generated for it in `loops_main.d`. Place the code side by side; which parts are the same and which are different, and why? Add your comments here in the README.
 
-### Task 2: Additional operators
+- Do the same with `slow_mult`
 
-Look at the three variations on the `absdiff` function in the `variant_condits.c` file. It is computing and returning what is called the absolute difference between the inputs x and y. Look at the first function, `absdiff`, and study it to make sure you know what it is doing.
+### Task 2: Basic for loops
 
-The next two functions in this file are equivalent to `absdiff`. The first one, `absdiff_j`, mimics how the compiler, when set to minimally optimize code, creates the assembly using a jump where you see goto in the C.
+- Create a new function, `sum_up_for`, that uses a for loop instead of a while loop for the `sum_up` task (add this to the `loops.c` and `loops_main.c` files). 
+- Compare the assembly code for this new function against the code generated for
+the original function. How do they differ?
+- Create a new function, `slow_mult_for`, that uses a for loop instead of a while loop for the `slow_mult` task, and compare the results
 
-The third function `absdiff_cm`, mimics what the compiler does to turn the above versions into conditional move versions when using the -O1 optimization flag.
+### Task 3: Connecting by-hand to running code
 
-- First, work through with your teammates what you think the assembly code will look like for `absdiff`.
-- Next, generate the assembly code, and examine it. What are the differences between the assembly for `absdiff` and `absdiff_j`?
-- Compare the assembly for `absdiff_cm` with the other two. How is it different and why?
-- Record here your notes on why the three are different
-- Add the filename `variant_condits_opt01.s` to the `variant_files` rule in the Makefile and make the optimizes assembly
-- Compare the optimized assembly to the unoptimized version: How and why are they different? Be sure to understand the role of the `cmov` instructions
-- Discuss, and record your notes here
+- Add the functions from the by-hand portion of the activity
+to the `loops.c` and `loops_main.c` file
+- Work backwards from the third code example to write C code that should generate the assembly code you were given
+- Compare your results with what you wrote before: where were your by-hand answers
+correct or incorrect?
 
 
-### Task 3: Making and using boolean values
+### Task 4: More complicated functions
 
-Open the `boolean_funcs.c` files and look at the functions defined there. Then generate the basic assembly code and examine it.
+Suppose we want a function with the call signature given below:
 
-- Make a copy of `boolean_funcs.s` called `commented_boolean_funcs.txt`, as we have done before, and add comments in your copy of the file. 
-    - Describe how registers correspond to variables and data in the C code
-    - Mark each line with which line(s) in the C code it corresponds to
-    - Describe what each step is doing
-- Add variations on these functions to try out different relational operators (`<`, `>=`, `<=`, `==`, `!=`) and different sizes of integers..
-- Try more complex boolean expressions; can you make sense of the results?
-- Discuss any unusual results
+    int nested_while(int r, int c);
+
+This function should contain two nested for or while loops. The outer loop should iterate over the values from 0 to `r`, and the inner loop should iterate over the
+values from 0 to `c`. The function should count how many times the inner loop runs
+in all, returning the result
+- Define this function, and add it to the `loops.c` and `loops_main.c` files. 
+- Try to predict what you think the assembly code will look like for this
+- Look at the `loops.s` generated code for this function. Make a copy of the `.s`
+file and add comments to it aligning the lines of assembly with the original C code
+
+Finally, suppose we want a function takes in two inputs:
+
+    int if_and_loop(int n, int d);
+
+It should loop over the values from 1 to `n`, and it should add them to a running total if they are divisible by d (if the remainder by d is zero).
+
+- Define this function and add it to `loops.c` and `loops_main.c`.
+- Try to predict the assembly code before examining what is generated
+- Compare the `loops.s` and `loops_main.d` code for this function with what you predicted. What was the same or different? How close were you to getting the assembly code right?  Add your comments to this README.
+
+### Optional Challenge Task: Effects of Optimization
+
+In our last activity, we looked at how the code changes if we increase the optimization level. Try generating the optimized assembly for `loops.c` and compare
+it to the unoptimized versions we worked with before. How does it differ?
 
 ## References
 
