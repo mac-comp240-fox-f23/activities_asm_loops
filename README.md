@@ -18,6 +18,12 @@ This code has "library" files without `main` functions defined, so that we gener
     - a C code file with copies of the functions from `loops.c` but with a
     `main` function that demonstrates each function
 
+### Note about Makefile
+
+The Makefile contains targets that produce the `.s` files as we have done before. It also
+contains a target to produce the `.d` files from calling `objdump` on the executable. One
+change is that it **keeps** the executable, so that you can run it and see that it works
+correctly!
 
 ## Your Tasks
 

@@ -19,11 +19,11 @@ F64 =-m64
 %.d: %.c
 	$(CC) $(CFLAGS) $(CINC) $(F64) $< -o $*
 	objdump -d $* > $@
-#	rm -f $*
+
 
 all: files
 
 files:	loops.s loops_main.d
 
 clean:
-	rm -f *.s *.opt00_s *.opt01_s
+	rm -f *.s *d. *.opt00_s *.opt01_s
